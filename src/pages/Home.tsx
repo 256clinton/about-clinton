@@ -1,4 +1,4 @@
-import { ArrowRight, Code2, Palette, Sparkles } from "lucide-react";
+import { ArrowRight, Code2, Palette, Sparkles, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -38,7 +38,13 @@ const Home = () => {
               </Link>
               <Link to="/about">
                 <Button size="lg" variant="outline" className="glass hover-glow">
-                  Learn More
+                  About Me
+                </Button>
+              </Link>
+              <Link to="/contact">
+                <Button size="lg" variant="outline" className="glass hover-glow group">
+                  <Mail className="mr-2 w-4 h-4 group-hover:scale-110 transition-transform" />
+                  Contact
                 </Button>
               </Link>
             </div>
@@ -88,6 +94,21 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Quick Contact Section */}
+      <section className="py-12">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link to="/contact">
+              <Button variant="ghost" size="lg" className="glass hover-glow group">
+                <Mail className="mr-2 w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                <span>Send me a message</span>
+                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24">
         <div className="container mx-auto px-6">
@@ -101,12 +122,19 @@ const Home = () => {
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
                 Have a project in mind? Let's collaborate and create something extraordinary together.
               </p>
-              <Link to="/about">
-                <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all hover-lift">
-                  Get In Touch
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link to="/contact">
+                  <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all hover-lift group">
+                    Get In Touch
+                    <Mail className="ml-2 w-4 h-4 group-hover:scale-110 transition-transform" />
+                  </Button>
+                </Link>
+                <Link to="/projects">
+                  <Button size="lg" variant="outline" className="glass hover-glow">
+                    View Portfolio
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
