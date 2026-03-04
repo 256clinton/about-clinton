@@ -21,7 +21,7 @@ const Home = () => {
             </div>
             
             <h1 className="text-6xl md:text-8xl font-bold mb-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-               CLINTON The Creative
+               I'M The Creative
               <span className="gradient-text glow-primary"> Developer</span>
             </h1>
             
@@ -36,7 +36,7 @@ const Home = () => {
                   <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Link to="/about">
+              <Link to="/projects">
                 <Button size="lg" variant="outline" className="glass hover-glow">
                   About Me
                 </Button>
@@ -142,5 +142,6 @@ const Home = () => {
     </div>
   );
 };
+
 
 export default Home;
