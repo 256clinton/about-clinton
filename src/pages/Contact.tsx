@@ -13,12 +13,14 @@ import {
   Github,
   Linkedin,
   Twitter,
-  Instagram
+  Instagram,
+  ArrowLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Link } from "react-router-dom"; 
 import {
   Select,
   SelectContent,
@@ -36,6 +38,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import emailjs from '@emailjs/browser';
+
+// Import your profile photo from your assets folder
+import profileImg from "@/assets/clinton-profile.png";
 
 interface FormData {
   name: string;
@@ -58,6 +63,7 @@ interface FormErrors {
 
 const Contact = () => {
   const formRef = useRef<HTMLFormElement>(null);
+  const faqSectionRef = useRef<HTMLDivElement>(null); 
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -75,22 +81,23 @@ const Contact = () => {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const { toast } = useToast();
 
-  // Initialize EmailJS
   useEffect(() => {
     emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
   }, []);
 
+  const scrollToFaqs = () => {
+    faqSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    // Name validation
     if (!formData.name.trim()) {
       newErrors.name = "Name is required";
     } else if (formData.name.length < 2) {
       newErrors.name = "Name must be at least 2 characters";
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
@@ -98,7 +105,6 @@ const Contact = () => {
       newErrors.email = "Please enter a valid email address";
     }
 
-    // Phone validation (optional but must be valid if provided)
     if (formData.phone) {
       const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
       if (!phoneRegex.test(formData.phone)) {
@@ -106,12 +112,10 @@ const Contact = () => {
       }
     }
 
-    // Subject validation
     if (!formData.subject.trim()) {
       newErrors.subject = "Subject is required";
     }
 
-    // Message validation
     if (!formData.message.trim()) {
       newErrors.message = "Message is required";
     } else if (formData.message.length < 20) {
@@ -127,7 +131,6 @@ const Contact = () => {
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error for this field
     if (errors[name as keyof FormErrors]) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
     }
@@ -152,9 +155,8 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // Send email using EmailJS
       const templateParams = {
-        to_name: "Adisa Music Team",
+        to_name: "IT SPECIALIST",
         from_name: formData.name,
         from_email: formData.email,
         from_phone: formData.phone || "Not provided",
@@ -176,10 +178,9 @@ const Contact = () => {
         setIsSuccess(true);
         toast({
           title: "Message Sent! 🎉",
-          description: "Thank you for reaching out. I'll get back to you within 24 hours.",
+          description: "Successfully sent. I'll get back to you within 24 hours.",
         });
 
-        // Reset form
         setFormData({
           name: "",
           email: "",
@@ -191,7 +192,6 @@ const Contact = () => {
           timeline: "",
         });
 
-        // Scroll to success message
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     } catch (error) {
@@ -229,22 +229,25 @@ const Contact = () => {
     {
       icon: Mail,
       title: "Email",
-      value: "hello@adisamusic.com",
-      link: "mailto:hello@adisamusic.com",
+      value: "IT specialist",
+      link: "mailto:musigaziclinton89@gmail.com",
+      isExternal: true,
       description: "Best for general inquiries"
     },
     {
       icon: Phone,
       title: "Phone",
-      value: "+256 700 123456",
-      link: "tel:+256700123456",
+      value: "+256 743942803",
+      link: "tel:+256743942803",
+      isExternal: true,
       description: "Mon-Fri, 9am-6pm EAT"
     },
     {
       icon: MapPin,
       title: "Location",
       value: "Kampala, Uganda",
-      link: "https://maps.google.com/?q=Kampala+Uganda",
+      link: "https://maps.google.com",
+      isExternal: true,
       description: "Available for remote work worldwide"
     },
     {
@@ -256,7 +259,7 @@ const Contact = () => {
   ];
 
   const socialLinks = [
-    { icon: Github, href: "https://github.com/adisa-music", label: "GitHub" },
+    { icon: Github, href: "https://github.com/256clinton", label: "GitHub" },
     { icon: Linkedin, href: "https://linkedin.com/in/adisa-music", label: "LinkedIn" },
     { icon: Twitter, href: "https://twitter.com/adisa_music", label: "Twitter" },
     { icon: Instagram, href: "https://instagram.com/adisa_music", label: "Instagram" },
@@ -283,7 +286,6 @@ const Contact = () => {
                 In the meantime, feel free to check out my work or connect on social media.
               </p>
               
-              {/* Social Links */}
               <div className="flex justify-center gap-4">
                 {socialLinks.map((social, index) => (
                   <a
@@ -298,13 +300,16 @@ const Contact = () => {
                 ))}
               </div>
 
-              <Button
-                onClick={() => setIsSuccess(false)}
-                variant="outline"
-                className="mt-4"
-              >
-                Send Another Message
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                <Button onClick={() => setIsSuccess(false)} variant="outline">
+                  Send Another Message
+                </Button>
+                <Link to="/">
+                  <Button className="w-full sm:w-auto">
+                    <ArrowLeft className="w-4 h-4 mr-2" /> Go Back Home
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -315,8 +320,11 @@ const Contact = () => {
   return (
     <div className="min-h-screen py-16 md:py-24 bg-gradient-to-b from-background to-secondary/20">
       <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
+        {/* Header Layout */}
+        <div className="text-center max-w-3xl mx-auto mb-12 relative">
+          <Link to="/" className="absolute left-0 top-0 hidden md:inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
+            <ArrowLeft className="w-4 h-4" /> Back to Home
+          </Link>
           <Badge variant="outline" className="mb-4">Get In Touch</Badge>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             Let's Start a <span className="gradient-text">Conversation</span>
@@ -328,36 +336,67 @@ const Contact = () => {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {/* Contact Info Sidebar */}
+          {/* Contact Info Sidebar with Integrated Profile Frame */}
           <div className="lg:col-span-1 space-y-6">
-            {/* Quick Contact Cards */}
-            {contactInfo.map((item, index) => (
-              <a
-                key={index}
-                href={item.link}
-                target={item.link.startsWith('http') ? '_blank' : undefined}
-                rel="noopener noreferrer"
-                className="block group"
-              >
-                <Card className="hover:shadow-lg transition-all hover:scale-105">
+            
+            {/* Gorgeous Floating Image Card Layout */}
+            <Card className="overflow-hidden border border-border/60 shadow-xl relative group">
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-accent/5 to-transparent pointer-events-none" />
+              <CardContent className="p-6 flex flex-col items-center text-center">
+                <div className="relative w-44 h-44 mb-4">
+                  {/* Outer Pulsing Gradient Background Ring */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-secondary rounded-full blur-md opacity-40 group-hover:opacity-60 transition-opacity duration-500" />
+                  
+                  {/* Circular Image Frame */}
+                  <div className="relative w-full h-full rounded-full bg-secondary border border-white/10 overflow-hidden flex items-end justify-center shadow-inner">
+                    <img 
+                      src={profileImg} 
+                      alt="Clinton Profile" 
+                      className="w-[85%] h-[90%] object-contain object-bottom filter drop-shadow-[0_8px_12px_rgba(0,0,0,0.25)] transition-transform duration-500 group-hover:scale-[1.04]"
+                    />
+                  </div>
+                </div>
+                <h2 className="text-xl font-bold tracking-tight text-foreground">Clinton</h2>
+                <p className="text-xs text-primary font-semibold tracking-wide uppercase mt-1">Full Stack Developer & Systems Specialist</p>
+              </CardContent>
+            </Card>
+
+            {/* Information Cards Array */}
+            {contactInfo.map((item, index) => {
+              const CardContentWrapper = () => (
+                <Card className="hover:shadow-lg transition-all hover:scale-[1.02] h-full">
                   <CardContent className="p-6 flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center transition-colors">
                       <item.icon className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold">{item.title}</h3>
-                      <p className="text-sm text-primary">{item.value}</p>
+                      <h3 className="font-semibold text-sm">{item.title}</h3>
+                      <p className="text-sm text-primary break-all font-medium mt-0.5">{item.value}</p>
                       <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
                     </div>
                   </CardContent>
                 </Card>
-              </a>
-            ))}
+              );
 
-            {/* Social Links */}
+              if (item.link) {
+                return item.isExternal ? (
+                  <a key={index} href={item.link} target="_blank" rel="noopener noreferrer" className="block">
+                    <CardContentWrapper />
+                  </a>
+                ) : (
+                  <Link key={index} to={item.link} className="block">
+                    <CardContentWrapper />
+                  </Link>
+                );
+              }
+
+              return <div key={index}><CardContentWrapper /></div>;
+            })}
+
+            {/* Social Links Card */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Connect With Me</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-bold">Connect With Me</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex gap-3">
@@ -377,26 +416,26 @@ const Contact = () => {
               </CardContent>
             </Card>
 
-            {/* FAQ Preview */}
+            {/* Quick Answers Card */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Quick Answers</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-bold">Quick Answers</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {faqs.slice(0, 2).map((faq, index) => (
                   <div key={index}>
-                    <h4 className="font-medium text-sm mb-1">{faq.question}</h4>
-                    <p className="text-xs text-muted-foreground">{faq.answer}</p>
+                    <h4 className="font-semibold text-xs mb-1">{faq.question}</h4>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{faq.answer}</p>
                   </div>
                 ))}
-                <Button variant="link" className="px-0 text-sm">
-                  View all FAQs →
+                <Button variant="link" className="px-0 text-xs h-auto pt-1" onClick={scrollToFaqs}>
+                  View all FAQs ↓
                 </Button>
               </CardContent>
             </Card>
           </div>
 
-          {/* Contact Form */}
+          {/* Contact Form Section */}
           <div className="lg:col-span-2">
             <Card className="p-6 md:p-8">
               <CardHeader className="px-0 pt-0">
@@ -407,12 +446,9 @@ const Contact = () => {
               </CardHeader>
               <CardContent className="px-0">
                 <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-                  {/* Name and Email Row */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name">
-                        Name <span className="text-red-500">*</span>
-                      </Label>
+                      <Label htmlFor="name">Name <span className="text-red-500">*</span></Label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
@@ -426,16 +462,13 @@ const Contact = () => {
                       </div>
                       {errors.name && (
                         <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
-                          <AlertCircle className="w-3 h-3" />
-                          {errors.name}
+                          <AlertCircle className="w-3 h-3" /> {errors.name}
                         </p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="email">
-                        Email <span className="text-red-500">*</span>
-                      </Label>
+                      <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
@@ -450,14 +483,12 @@ const Contact = () => {
                       </div>
                       {errors.email && (
                         <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
-                          <AlertCircle className="w-3 h-3" />
-                          {errors.email}
+                          <AlertCircle className="w-3 h-3" /> {errors.email}
                         </p>
                       )}
                     </div>
                   </div>
 
-                  {/* Phone and Subject Row */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="phone">Phone (Optional)</Label>
@@ -474,16 +505,13 @@ const Contact = () => {
                       </div>
                       {errors.phone && (
                         <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
-                          <AlertCircle className="w-3 h-3" />
-                          {errors.phone}
+                          <AlertCircle className="w-3 h-3" /> {errors.phone}
                         </p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="subject">
-                        Subject <span className="text-red-500">*</span>
-                      </Label>
+                      <Label htmlFor="subject">Subject <span className="text-red-500">*</span></Label>
                       <div className="relative">
                         <MessageSquare className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
@@ -497,24 +525,17 @@ const Contact = () => {
                       </div>
                       {errors.subject && (
                         <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
-                          <AlertCircle className="w-3 h-3" />
-                          {errors.subject}
+                          <AlertCircle className="w-3 h-3" /> {errors.subject}
                         </p>
                       )}
                     </div>
                   </div>
 
-                  {/* Budget and Timeline */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="budget">Budget Range (Optional)</Label>
-                      <Select
-                        value={formData.budget}
-                        onValueChange={(value) => handleSelectChange('budget', value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select budget range" />
-                        </SelectTrigger>
+                      <Select value={formData.budget} onValueChange={(value) => handleSelectChange('budget', value)}>
+                        <SelectTrigger><SelectValue placeholder="Select budget range" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="<1000">Less than $1,000</SelectItem>
                           <SelectItem value="1000-5000">$1,000 - $5,000</SelectItem>
@@ -527,13 +548,8 @@ const Contact = () => {
 
                     <div className="space-y-2">
                       <Label htmlFor="timeline">Timeline (Optional)</Label>
-                      <Select
-                        value={formData.timeline}
-                        onValueChange={(value) => handleSelectChange('timeline', value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select timeline" />
-                        </SelectTrigger>
+                      <Select value={formData.timeline} onValueChange={(value) => handleSelectChange('timeline', value)}>
+                        <SelectTrigger><SelectValue placeholder="Select timeline" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="asap">ASAP (Within 1 week)</SelectItem>
                           <SelectItem value="1-2weeks">1-2 weeks</SelectItem>
@@ -545,51 +561,27 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  {/* Preferred Contact Method */}
                   <div className="space-y-2">
                     <Label>Preferred Contact Method</Label>
                     <div className="flex gap-4">
-                      <label className="flex items-center gap-2">
-                        <input
-                          type="radio"
-                          name="preferredContact"
-                          value="email"
-                          checked={formData.preferredContact === 'email'}
-                          onChange={(e) => handleSelectChange('preferredContact', e.target.value)}
-                          className="w-4 h-4 text-primary"
-                        />
-                        <span className="text-sm">Email</span>
-                      </label>
-                      <label className="flex items-center gap-2">
-                        <input
-                          type="radio"
-                          name="preferredContact"
-                          value="phone"
-                          checked={formData.preferredContact === 'phone'}
-                          onChange={(e) => handleSelectChange('preferredContact', e.target.value)}
-                          className="w-4 h-4 text-primary"
-                        />
-                        <span className="text-sm">Phone</span>
-                      </label>
-                      <label className="flex items-center gap-2">
-                        <input
-                          type="radio"
-                          name="preferredContact"
-                          value="any"
-                          checked={formData.preferredContact === 'any'}
-                          onChange={(e) => handleSelectChange('preferredContact', e.target.value)}
-                          className="w-4 h-4 text-primary"
-                        />
-                        <span className="text-sm">No preference</span>
-                      </label>
+                      {['email', 'phone', 'any'].map((method) => (
+                        <label key={method} className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="preferredContact"
+                            value={method}
+                            checked={formData.preferredContact === method}
+                            onChange={(e) => handleSelectChange('preferredContact', e.target.value)}
+                            className="w-4 h-4 text-primary accent-primary"
+                          />
+                          <span className="text-sm capitalize">{method === 'any' ? 'No preference' : method}</span>
+                        </label>
+                      ))}
                     </div>
                   </div>
 
-                  {/* Message */}
                   <div className="space-y-2">
-                    <Label htmlFor="message">
-                      Message <span className="text-red-500">*</span>
-                    </Label>
+                    <Label htmlFor="message">Message <span className="text-red-500">*</span></Label>
                     <Textarea
                       id="message"
                       name="message"
@@ -603,46 +595,26 @@ const Contact = () => {
                       <span className={errors.message ? 'text-red-500' : 'text-muted-foreground'}>
                         {errors.message || `Minimum 20 characters`}
                       </span>
-                      <span className="text-muted-foreground">
-                        {formData.message.length}/5000
-                      </span>
+                      <span className="text-muted-foreground">{formData.message.length}/5000</span>
                     </div>
                   </div>
 
-                  {/* Submit Button */}
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all hover:scale-[1.02]"
-                    size="lg"
-                  >
+                  <Button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-primary to-accent" size="lg">
                     {isSubmitting ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Sending Message...
-                      </>
+                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sending Message...</>
                     ) : (
-                      <>
-                        <Send className="w-4 h-4 mr-2" />
-                        Send Message
-                      </>
+                      <><Send className="w-4 h-4 mr-2" /> Send Message</>
                     )}
                   </Button>
-
-                  <p className="text-xs text-center text-muted-foreground">
-                    By submitting this form, you agree to my privacy policy and consent to being contacted.
-                  </p>
                 </form>
               </CardContent>
             </Card>
           </div>
         </div>
 
-        {/* Full FAQ Section */}
-        <div className="max-w-3xl mx-auto mt-16">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
-            Frequently Asked Questions
-          </h2>
+        {/* FAQ Accordion Section */}
+        <div ref={faqSectionRef} className="max-w-3xl mx-auto mt-16 pt-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {faqs.map((faq, index) => (
               <Card
@@ -656,9 +628,7 @@ const Contact = () => {
                     <span className="text-2xl">{activeFaq === index ? '−' : '+'}</span>
                   </div>
                   {activeFaq === index && (
-                    <p className="mt-4 text-muted-foreground animate-fade-in">
-                      {faq.answer}
-                    </p>
+                    <p className="mt-4 text-muted-foreground animate-fade-in">{faq.answer}</p>
                   )}
                 </CardContent>
               </Card>

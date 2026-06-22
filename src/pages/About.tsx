@@ -1,4 +1,6 @@
 import { Code, Lightbulb, Rocket, Target } from "lucide-react";
+// Import your profile photo from your local asset directory
+import profileImg from "@/assets/clinton-profile.png"; 
 
 const About = () => {
   const skills = [
@@ -36,18 +38,39 @@ const About = () => {
   return (
     <div className="min-h-screen py-24">
       <div className="container mx-auto px-6">
-        {/* Hero Section */}
+        
+        {/* Hero Section - Split Layout with Image Container */}
         <section className="mb-24">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
-              About <span className="gradient-text">Me</span>
-            </h1>
-            <p className="text-xl text-muted-foreground leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              I'm a passionate developer and designer with over 5 years of experience creating
-              digital products that combine beautiful aesthetics with powerful functionality.
-              My mission is to bridge the gap between design and development, creating seamless
-              experiences that users love.
-            </p>
+          <div className="max-w-5xl mx-auto grid md:grid-cols-12 gap-12 items-center">
+            
+            {/* Left Content Column */}
+            <div className="md:col-span-7 text-center md:text-left order-2 md:order-1">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in">
+                About <span className="gradient-text">Me</span>
+              </h1>
+              <p className="text-xl text-muted-foreground leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                I'm a passionate developer and designer focused on creating high-performance digital solutions that combine beautiful aesthetics with powerful functionality. 
+                My mission is to bridge the gap between frontend design aesthetics and complex server structures, building flawless systems that drive results.
+              </p>
+            </div>
+
+            {/* Right Photo Column Layout */}
+            <div className="md:col-span-5 flex justify-center order-1 md:order-2 animate-scale-in">
+              <div className="relative group w-72 h-72 md:w-80 md:h-80">
+                {/* Glowing Background Ring Effect */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary via-accent to-secondary rounded-3xl opacity-30 blur-xl group-hover:opacity-50 transition-opacity duration-500" />
+                
+                {/* Image Wrapper Masking Box */}
+                <div className="relative w-full h-full glass rounded-3xl overflow-hidden border border-white/10 flex items-end justify-center group-hover:scale-[1.02] transition-transform duration-500">
+                  <img 
+                    src={profileImg} 
+                    alt="Clinton" 
+                    className="w-[90%] h-[95%] object-contain object-bottom filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.3)]"
+                  />
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
 
@@ -118,23 +141,17 @@ const About = () => {
             <div className="space-y-8">
               {[
                 {
-                  year: "2023 - Present",
-                  title: "Senior Full Stack Developer",
-                  company: "Tech Innovations Inc.",
-                  description: "Leading development of cutting-edge web applications using modern technologies.",
+                  year: "2025 - Present",
+                  title: "Full Stack Engineer & Tech Innovator",
+                  company: "Standalone Development & Open Source Projects",
+                  description: "Building inventory-focused point-of-sale setups, contributing code features to open source software distribution layers, and creating bespoke interfaces using Vite and Tailwind frameworks.",
                 },
                 {
-                  year: "2021 - 2023",
-                  title: "Full Stack Developer",
-                  company: "Digital Solutions Ltd.",
-                  description: "Built scalable applications and mentored junior developers.",
-                },
-                {
-                  year: "2019 - 2021",
-                  title: "Frontend Developer",
-                  company: "Creative Agency",
-                  description: "Created stunning user interfaces and interactive experiences.",
-                },
+                  year: "2023 - 2025",
+                  title: "System Administrator & Infrastructure Specialist",
+                  company: "Network Systems Design Lab",
+                  description: "Configured Active Directory frameworks, managed domain controllers, Samba integration matrixes, and protocol analysis setups across mixed server topologies.",
+                }
               ].map((exp, index) => (
                 <div
                   key={index}
