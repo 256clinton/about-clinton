@@ -87,7 +87,7 @@ const Projects = () => {
       image: "https://unsplash.com/photos/graphical-user-interface-logo-Y81s6NPBRC8",
       tags: ["Vue.js", "Express", "MongoDB", "AWS"],
       gradient: "from-orange-500 to-red-500",
-      demoUrl: "https://wifi-easy-bill.lovable.app",
+      demoUrl: "https://wifi-easy-bill.vercel.app/",
       codeUrl: "https://github.com/256clinton/wifi-easy-bill.git",
     },
     {
